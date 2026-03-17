@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitops-demo          # Name of the application in ArgoCD
+  namespace: argocd           # ArgoCD namespace
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/Adeyinka081/gitops-demo.git'  # Your public repo 
+    targetRevision: HEAD
+    path: gitops-demo-chart   # Path to Helm chart folder in repo
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: 'https://kubernetes.default.svc'  # Deploy to current cluster
+    namespace: default                         # Target namespace in cluster
+  syncPolicy:
+    automated:
+      prune: true       # Delete resources removed from Git
+      selfHeal: true    # Fix drift automatically 
